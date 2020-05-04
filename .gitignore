@@ -1,2 +1,4 @@
 *.class
 *.log
+.idea
+*ipynb_checkpoints*
