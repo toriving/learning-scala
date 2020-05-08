@@ -4,6 +4,7 @@
 
 1\. Install Scala Kernel (Mac OS):
 ```
+$ brew install scala
 $ brew install sbt
 ```
 2\. Set the desired version of Scala and Almond as environment variables:  
