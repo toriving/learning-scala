@@ -17,4 +17,5 @@ object eighth extends App{
   for (x <- test.productIterator) {
     println(s"$x -> ${x.getClass}")
   }
+
 }

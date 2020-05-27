@@ -1,4 +1,6 @@
 package com.learningScala.chapter.four.exercise_2
+import scala.io.StdIn.readLine
+import scala.math.Pi
 
 object second extends App{
   /**

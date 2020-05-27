@@ -12,5 +12,5 @@ object fourth extends App{
   println(fzero[Int](52) { b => println(s"b was $b") })
   println(fzero[String]("Dongju") { c => println(s"c was $c") })
 
-  // A타입의 x와 A타입을 arg로 갖는 함수x를 arg로 받아서 x에 대해 함수 f를 시행하고 리턴으로 x를 돌려줌
+  // A타입의 x와 A타입을 arg로 갖는 함수를 arg로 받아서 x에 대해 함수 f를 시행하고 리턴으로 x를 돌려줌
 }
