@@ -1,5 +1,7 @@
 package com.learningScala.chapter.nine.exercise_4
-import java.io.{PrintWriter, File}
+import java.io.{File, PrintWriter}
+
+import com.learningScala.chapter.nine.exercise_2.SafeStringUtils
 import org.scalatest._
 
 class FileSummySpec extends FlatSpec with Matchers {
