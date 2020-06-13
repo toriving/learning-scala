@@ -72,6 +72,74 @@ object sixth {
     title :: formattedEntries mkString ("\n" + "=" * 80 + "\n")
   }
 
+  /**
+   * b: 연습문제 (a) 다음으로, 함수가 GItHub 프로젝트 리스트를 취해서 명시된 프로젝트 순서대로
+   * 각 프로젝트의 커밋에 대한 리포트를 출력하도록 만들어라
+   */
+
+  def getGithubCommitReports(urb: (String,String,String)): List[String] = {
+    val xml = githubRss(urb._1, urb._2, urb._3)
+    val entries = xmlToEntryList(xml).toList
+    val branchInfo = s"branch: ${urb._2}:${urb._3}\n"
+    entries flatMap report map (branchInfo + _)
+  }
+
+  def getGithubReports(urbs: List[(String,String,String)]): String = {
+    val commits = urbs flatMap getGithubCommitReports
+    val separator = "\n" + "="*60 + "\n"
+    val title = s"Github activity for ${urbs map (_._1) mkString (", ")} repos"
+    title :: commits mkString separator
+  }
+
+  /**
+   * c: 연습문제 (b)에 이어, 퓨처를 동시에 사용하여 모든 프로젝트와 커밋 데이터를 가져오고,
+   * 그 결과를 기다린(5초이상 기다리지는 않는다) 후에 명시된 프로젝트 순서대로
+   * 각 프로젝트에 대한 커밋 리포트를 출력하라
+   */
+
+  def getGithubReportsC(urbs: List[(String,String,String)]): String = {
+    val commits = List.newBuilder[String]
+
+    import concurrent.ExecutionContext.Implicits.global
+    val futures = urbs map { urb =>
+      concurrent.Future { commits ++= getGithubCommitReports(urb) }
+    }
+    val future = concurrent.Future.sequence(futures)
+
+    import concurrent.duration._
+    concurrent.Await.result(future, Duration(5, SECONDS))
+
+    val separator = "\n" + "="*60 + "\n"
+    val title = s"Github activity for ${urbs map (_._1) mkString (", ")} repos"
+    (title :: commits.result) mkString separator
+  }
+
+  /**
+   * d: 연습문제 (c)에 이어, 커밋을 섞어서 커밋 일자 기준으로 정렬한 후에 추가적인 'repo' 컬럼으로 리포트를 출력하라.
+   */
+
+  def getGithubReportsD(urbs: List[(String,String,String)]): String = {
+    val commits = List.newBuilder[String]
+
+    import concurrent.ExecutionContext.Implicits.global
+    val futures = urbs map { urb =>
+      concurrent.Future { commits ++= getGithubCommitReports(urb) }
+    }
+    val future = concurrent.Future.sequence(futures)
+
+    import concurrent.duration._
+    concurrent.Await.result(future, Duration(5, SECONDS))
+
+    val separator = "\n" + "="*60 + "\n"
+    val title = s"Github activity for ${urbs map (_._1) mkString (", ")} repos"
+
+    val sortedCommits = commits.result.sortBy { c =>
+      c.replaceAll("(?s).*date:   ","").replaceAll("(?s)\\s.*","")
+    }.reverse
+
+    (title :: sortedCommits) mkString separator
+  }
+
   def main(args: Array[String]): Unit = {
 
     val xml = githubRss("toriving", "learning-scala", "master")
@@ -81,11 +149,21 @@ object sixth {
     val firstReport = report(entries(0))
     val slickReport = getGithubReport("toriving", "learning-scala", "master")
 
-    println(xml)
-    println(entries)
-    println(firstTitle)
-    println(firstReport)
-    println(slickReport)
+//    println(xml)
+//    println(entries)
+//    println(firstTitle)
+//    println(firstReport)
+//    println(slickReport)
+
+    // b
+
+    val slickUrb = ("slick","slick","master")
+    val akkaUrb = ("akka","akka","master")
+    val scalaUrb = ("scala","scala","2.11.x")
+    val scalazUrb = ("scalaz","scalaz","series/7.2.x")
+//    println( getGithubReports(List(slickUrb, akkaUrb)) )
+//    println( getGithubReportsC(List(scalaUrb, scalazUrb)) )
+    println( getGithubReportsD(List(slickUrb, scalazUrb)) )
 
   }
 }
