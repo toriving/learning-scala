@@ -62,6 +62,16 @@ object sixth {
   }
 
 
+  // a: 사용자, 리포지토리, 브랜치 매개변수를 튜플 매개변수로 옮겨라.
+
+  def getGithubReport(urb: (String,String,String)): String = {
+    val xml = githubRss(urb._1, urb._2, urb._3)
+    val entries = xmlToEntryList(xml).toList
+    val formattedEntries = entries flatMap report
+    val title = s"Github commit activity for ${urb._2}:${urb._3}"
+    title :: formattedEntries mkString ("\n" + "=" * 80 + "\n")
+  }
+
   def main(args: Array[String]): Unit = {
 
     val xml = githubRss("toriving", "learning-scala", "master")
