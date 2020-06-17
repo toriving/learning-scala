@@ -42,6 +42,5 @@ object fourth {
 
     println(product(x, z))
     println(productFor(x, z))
-
   }
 }
