@@ -26,6 +26,7 @@ package com.learningScala.chapter.seven.exercise_6
 
 object sixth {
 
+  // Get xml
   def githubRss(user: String, repo: String, branch: String): String = {
     val url = s"https://github.com/$user/$repo/commits/$branch.atom"
     val lines = io.Source.fromURL(url).getLines.toList
@@ -33,9 +34,10 @@ object sixth {
     xml
   }
 
+  // Entry 항목으로 분리
   def xmlToEntryList(xml: String): Array[String] = xml.split("</?entry>").filterNot(_.isEmpty).tail
 
-
+  // name 파싱
   def child(xml: String, name: String): Option[String] = {
     val p = s".*<$name>(.*)</$name>.*".r
     xml match {
@@ -44,6 +46,7 @@ object sixth {
     }
   }
 
+  // 내용 report
   def report(entryXml: String): Option[String] = {
     for {
       title <- child(entryXml, "title")
@@ -56,18 +59,19 @@ object sixth {
   def getGithubReport(user: String, repo: String, branch: String): String = {
     val xml = githubRss(user, repo, branch)
     val entries = xmlToEntryList(xml).toList
-    val formattedEntries = entries flatMap report
+    val formattedEntries = entries.flatMap(report)
     val title = s"Github commit activity for $repo:$branch"
     title :: formattedEntries mkString ("\n" + "=" * 80 + "\n")
   }
 
-
-  // a: 사용자, 리포지토리, 브랜치 매개변수를 튜플 매개변수로 옮겨라.
+  /**
+   *   a: 사용자, 리포지토리, 브랜치 매개변수를 튜플 매개변수로 옮겨라.
+   */
 
   def getGithubReport(urb: (String,String,String)): String = {
     val xml = githubRss(urb._1, urb._2, urb._3)
     val entries = xmlToEntryList(xml).toList
-    val formattedEntries = entries flatMap report
+    val formattedEntries = entries.flatMap(report)
     val title = s"Github commit activity for ${urb._2}:${urb._3}"
     title :: formattedEntries mkString ("\n" + "=" * 80 + "\n")
   }

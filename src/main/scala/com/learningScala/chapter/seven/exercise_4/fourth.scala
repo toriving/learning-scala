@@ -12,6 +12,7 @@ object fourth {
 
   def toDouble(x: String): Option[Double] ={
     util.Try(x.toDouble).toOption
+    // x.toDoubleOption 가능
   }
 
   def product(x: String, y: String): Option[Double] ={
