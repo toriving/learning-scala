@@ -28,20 +28,24 @@ object secondC {
 
     def filter(f: T => Boolean): LinkedList[T] = {
       var result: LinkedList[T] = new EmptyList[T]
+      var tmp: Seq[T] = Seq()
       foreach { i =>
         if ( f(i) ) {
-          result = new DefinedList[T](i)
+          tmp = tmp.appended(i)
         }
       }
-      result.reverse
+      result = new DefinedList[T](tmp:_*)
+      result
     }
 
     def map[A](f: T => A): LinkedList[A] = {
       var result: LinkedList[A] = new EmptyList[A]
+      var tmp: Seq[A] = Seq()
       foreach { i =>
-        result = new DefinedList[A](f(i))
+        tmp = tmp.appended(f(i))
       }
-      result.reverse
+      result = new DefinedList[A](tmp:_*)
+      result
     }
 
     lazy val reverse: LinkedList[T] = {
@@ -78,18 +82,21 @@ object secondC {
 
   def main(args: Array[String]): Unit ={
     val ll = new DefinedList(1,2,3,4,10)
-    println(ll.head)
-    ll.foreach(println)
-    println(ll(0))
-    println(ll(1))
-    println(ll(2))
-    println(ll(3))
-    println(ll(4))
-    println(ll(5))
-    println(ll.head)
-    println(ll.tail)
-    println(ll.size)
-    val a = ll.filter(x => x >1)
-    println("1")
+//    println(ll.head)
+//    ll.foreach(println)
+//    println(ll(0))
+//    println(ll(1))
+//    println(ll(2))
+//    println(ll(3))
+//    println(ll(4))
+//    println(ll(5))
+//    println(ll.head)
+//    println(ll.tail)
+//    println(ll.size)
+    val filterTest = ll.filter(x => x > 2)
+    filterTest.foreach(println)
+    val mapTest = ll.map(x => x*2)
+    mapTest.foreach(println)
+
   }
 }
